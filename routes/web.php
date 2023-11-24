@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -27,5 +28,10 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
     Route::get('criar-escola', [SchoolController::class, 'create'])->name('school.create');
-    
+    Route::post('criar-escola', [SchoolController::class,'store'])->name('store.create');
+    Route::get('escolas', [SchoolController::class, 'schools'])->name('schools');
+
+    Route::get('criar-alunos', [StudentController::class, 'create'])->name('student.create');
+    Route::post('criar-alunos', [StudentController::class,'store'])->name('student.store');
+    Route::get('alunos', [StudentController::class,'student'])->name('student');
 });

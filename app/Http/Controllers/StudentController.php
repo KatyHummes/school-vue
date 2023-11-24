@@ -6,5 +6,8 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    //
+    public function create()
+    {
+        return Inertia::render('Student/Create');
+    }
 }
