@@ -39,7 +39,7 @@ const logout = () => {
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
-                        <div class="flex">
+                        <div class="flex items-center">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('welcome')">
@@ -54,22 +54,36 @@ const logout = () => {
                                 </NavLink>
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('school.create')" :active="route().current('school.create')">
-                                    Criar Escola
-                                </NavLink>
+                                <Dropdown align="right" width="48">
+                                    <template #trigger>
+                                        <button type="button"
+                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                            Escolas
+
+                                            <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                            </svg>
+                                        </button>
+                                    </template>
+                                    <template #content>
+                                        <DropdownLink :href="route('school.create')"
+                                            :active="route().current('school.create')">
+                                            Criar
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('schools')" :active="route().current('schools')">
+                                            Escola
+                                        </DropdownLink>
+                                    </template>
+                                </Dropdown>
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('schools')" :active="route().current('schools')">
-                                    Escolas
-                                </NavLink>
-                            </div>
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('students.create')" :active="route().current('students.create')">
+                                <NavLink :href="route('student.create')" :active="route().current('student.create')">
                                     Criar Aluno
                                 </NavLink>
                             </div>
                         </div>
-
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
@@ -214,7 +228,8 @@ const logout = () => {
                 </div>
 
                 <!-- Responsive Navigation Menu -->
-                <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }" class="sm:hidden">
+                <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
+                    class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('welcome')" :active="route().current('welcome')">
                             Home
@@ -231,8 +246,8 @@ const logout = () => {
                         </ResponsiveNavLink>
                     </div>
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('students.create')" :active="route().current('students.create')">
-                            Criar Escola
+                        <ResponsiveNavLink :href="route('student.create')" :active="route().current('student.create')">
+                            Criar Aluno
                         </ResponsiveNavLink>
                     </div>
 
@@ -319,18 +334,19 @@ const logout = () => {
                         </div>
                     </div>
                 </div>
-        </nav>
+            </nav>
 
-        <!-- Page Heading -->
-        <header v-if="$slots.header" class="bg-white shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                <slot name="header" />
-            </div>
-        </header>
+            <!-- Page Heading -->
+            <header v-if="$slots.header" class="bg-white shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <slot name="header" />
+                </div>
+            </header>
 
-        <!-- Page Content -->
-        <main>
-            <slot />
-        </main>
+            <!-- Page Content -->
+            <main>
+                <slot />
+            </main>
+        </div>
     </div>
-</div></template>
+</template>
