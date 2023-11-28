@@ -21,6 +21,7 @@ class StudentController extends Controller
     {
         // dd($request->all());
         Student::create([
+            'classroom_id' => $request->input('classroom_id'),
             'name' => $request->input('name'),
             'birth' => $request->input('birth'),
             'sex' => $request->input('sex')['name'],

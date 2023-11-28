@@ -12,6 +12,6 @@ class Student extends Model
         'birth',
         'sex',
         'cpf',
-        'address1',
+        'address',
     ];
 }

@@ -1,26 +1,28 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
+// import { useForm as useFormPrecognition } from 'laravel-precognition-vue-inertia';
+import { useForm } from 'laravel-precognition-vue-inertia';
+
 
 defineProps({
 
 });
 
-const form = useForm({
+const form = useForm('post', route('school.create'), {
     name: '',
     education: '',
     address: '',
     course: '',
 });
 
-const createSchool = () => {
-    form.post(route('school.create'), {
-        onFinish: () => form.reset(),
-    });
-};
+const submit = () => form.submit({
+    preserveScroll: true,
+    onSuccess: () => form.reset(),
+});
 
 const educations = ref([
     { name: 'Médio', code: 'M' },
@@ -63,30 +65,43 @@ const higher = ref([
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <form @submit.prevent="createSchool">
+                    <form @submit.prevent="submit">
                         <div class="p-6 grid md:grid-cols-2 gap-4">
                             <div class="flex flex-col gap-2">
                                 <label for="name">Nome*</label>
-                                <InputText id="name" v-model="form.name" />
+                                <InputText id="name" v-model="form.name" @change="form.validate('name')" />
+                                <div v-if="form.invalid('name')" class="text-red-500">
+                                    {{ form.errors.name }}
+                                </div>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="name">Escolaridade*{{ form.education?.code }}</label>
                                 <Dropdown v-model="form.education" :options="educations" optionLabel="name"
-                                    placeholder="Selecione a Escolaridade" class="w-full md:w-14rem" />
+                                    @change="form.validate('education')" placeholder="Selecione a Escolaridade"
+                                    class="w-full md:w-14rem" />
+                                <div v-if="form.invalid('education')" class="text-red-500">
+                                    {{ form.errors.education }}
+                                </div>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="address">Endereço*</label>
-                                <InputText id="address" v-model="form.address" />
+                                <InputText id="address" v-model="form.address"  @change="form.validate('address')" />
+                                <div v-if="form.invalid('address')" class="text-red-500">
+                                    {{ form.errors.address }}
+                                </div>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="name">Curso*</label>
-                                <Dropdown v-if="form.education?.code == 'M'" v-model="form.course" :options="average"
+                                <Dropdown v-if="form.education?.code == 'M'" v-model="form.course" :options="average" @change="form.validate('course')" 
                                     optionLabel="name" placeholder="Selecione o curso" class="w-full md:w-14rem" />
-                                <Dropdown v-if="form.education?.code == 'T'" v-model="form.course" :options="technical"
+                                <Dropdown v-if="form.education?.code == 'T'" v-model="form.course" :options="technical" @change="form.validate('course')" 
                                     optionLabel="name" placeholder="Selecione o curso" class="w-full md:w-14rem" />
-                                <Dropdown v-if="form.education?.code == 'S'" v-model="form.course" :options="higher"
+                                <Dropdown v-if="form.education?.code == 'S'" v-model="form.course" :options="higher" @change="form.validate('course')" 
                                     optionLabel="name" placeholder="Selecione o curso" class="w-full md:w-14rem" />
                                 <p v-if="form.education?.code == null">Selecione uma Escolaridade primeiro!</p>
+                                <div v-if="form.invalid('course')" class="text-red-500">
+                                    {{ form.errors.course }}
+                                </div>
                             </div>
 
                         </div>
