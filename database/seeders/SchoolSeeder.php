@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\School;
 use Faker\Factory as Faker;
 
-class SchoolsSeeder extends Seeder
+class SchoolSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -24,11 +24,11 @@ class SchoolsSeeder extends Seeder
 
         foreach (range(1, 100) as $index) {
             $nivelEducacao = $faker->randomElement(['average', 'technical', 'higher']);
-            $curso = $faker->randomElement($nivelEducacaoECursos[$nivelEducacao]);
+            $course = $faker->randomElement($nivelEducacaoECursos[$nivelEducacao]);
 
             School::create([
                 'name' => $faker->company,
-                'course' => $curso,
+                'course' => $course,
                 'education' => $nivelEducacao,
                 'address' => $faker->address,
             ]);

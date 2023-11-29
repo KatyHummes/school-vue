@@ -38,6 +38,6 @@ Route::middleware([
     Route::get('editar-turma/{id}', [ClassroomController::class, 'edit'])->name('classroom.edit');
 
     Route::get('criar-alunos', [StudentController::class, 'create'])->name('student.create');
-    Route::post('criar-alunos', [StudentController::class,'store'])->name('student.store');
-    Route::get('alunos', [StudentController::class,'student'])->name('students');
+    Route::post('criar-alunos', [StudentController::class,'store'])->name('student.store')->middleware([Precognition::class]);
+    Route::get('alunos', [StudentController::class,'students'])->name('students');
 });

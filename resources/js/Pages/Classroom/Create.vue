@@ -7,9 +7,6 @@ import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
 
-
-
-
 const props = defineProps({
     schools: Array
 });
@@ -32,8 +29,6 @@ const rotations = ref([
 ]);
 
 const schools = ref([]);
-
-// Supondo que props.schools seja uma array de objetos com propriedades id e name
 for (const school of props.schools) {
     schools.value.push({ id: school.id, name: school.name });
 }
@@ -87,11 +82,8 @@ for (const school of props.schools) {
                                         {{ form.errors.max_students }}
                                     </div>
                                 </div>
-
-
                             </div>
                             <button type="submit" class="py-2 px-4 m-5 rounded-lg bg-green-600 text-white">Enviar</button>
-
                         </form>
                     </div>
                 </div>

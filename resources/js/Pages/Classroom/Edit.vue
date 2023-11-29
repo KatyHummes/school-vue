@@ -15,7 +15,7 @@ const props = defineProps({
 
 const form = useForm('post', route('classroom.store'), {
     name: props.classroom.name,
-    rotation: props.classroom.rotation,
+    rotation: props.classroom.rotation.value,
     max_students: props.classroom.max_students,
 
 });
@@ -29,6 +29,10 @@ const rotation = ref([
     { name: 'Tarde', code: 'T' },
     { name: 'Noite', code: 'N' },
 ]);
+
+onMounted(() => {
+    form.school_id = props.classroom.school_id;
+});
 
 </script>
 
@@ -53,7 +57,7 @@ const rotation = ref([
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="rotation">Turno*{{ classroom.rotation }}</label>
+                                <label for="rotation">Turno*</label>
                                 <Dropdown v-model="form.rotation" :options="rotation" optionLabel="name"
                                     @change="form.validate('rotation')" placeholder="Selecione o Turno"
                                     class="w-full md:w-14rem" />

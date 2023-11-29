@@ -22,7 +22,24 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'classroom_id' => ['required'],
+            'name' => ['required', 'max:255', 'min:5'],
+            'birth' => ['required', 'integer'],
+            'sex' => ['required', 'max:255', 'min:5'],
+            'cpf' => ['required', 'min:11', 'max:14'],
+            'address' => ['required',],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Este campo é obrigatório!',
+            'max' => 'Deve ter no máximo 255 caracteres!',
+            'min' => 'Deve ter no minimo 5 caracteres',
+            'cpf.min' => 'O CPF deve ter 11 caracteres!',
+            'cpf.max' => 'O CPF deve ter 11 caracteres!',
+            'integer' => 'Deve ser um número inteiro',
         ];
     }
 }

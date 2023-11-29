@@ -2,7 +2,6 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, computed } from 'vue';
 import Calendar from 'primevue/calendar';
-import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import { useForm as useFormPrecognition } from 'laravel-precognition-vue-inertia';
 import InputMask from 'primevue/inputmask';
@@ -10,21 +9,19 @@ import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 
-const toast = useToast();
 
 const props = defineProps({
-    canLogin: Boolean,
-    canRegister: Boolean,
-    students: Array
-
+    classrooms: Array
 });
 
-const form = useFormPrecognition('post', '/student.store', {
+
+const form = useFormPrecognition('post', route('student.store'), {
     name: '',
     birth: '',
     cpf: '',
     sex: '',
     address: '',
+    classrom_id: '',
 });
 
 const submit = () => form.submit({
@@ -36,11 +33,22 @@ const submit = () => form.submit({
         });
     }
 });
+
+const sex = ref([
+    { name: 'Masculino', code: 'M' },
+    { name: 'Feminino', code: 'F' },
+    { name: 'Outro', code: 'O' },
+]);
+
+const classrooms = ref([]);
+for (const classroom of props.classrooms) {
+    classrooms.value.push({ id: classroom.id, name: classroom.name });
+}
+
 </script>
 
 
 <template>
-
     <AppLayout title="Criar usuário">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -57,27 +65,53 @@ const submit = () => form.submit({
 
                                 <div class="flex flex-col gap-2">
                                     <label for="name">Nome*</label>
-                                    <InputText id="name" v-model="form.name" />
+                                    <InputText id="name" v-model="form.name" @change="form.validate('name')" placeholder="Digite o Nome"/>
+                                    <div v-if="form.invalid('name')" class="text-red-500">
+                                        {{ form.errors.name }}
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 card justify-content-center">
+                                    <label for="birth">Data de Nascimento*</label>
+                                    <Calendar id="birth" v-model="form.birth" showIcon @change="form.validate('birth')" placeholder="Selecione a Data"/>
+                                    <div v-if="form.invalid('birth')" class="text-red-500">
+                                        {{ form.errors.birth }}
+                                    </div>
                                 </div>
                                 <div class="flex flex-col gap-2">
-                                    <label for="name">Nome*</label>
-                                    <InputText id="name" v-model="form.name" />
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <label for="name">Nome*</label>
-                                    <InputText id="name" v-model="form.name" />
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <label for="name">Nome*</label>
-                                    <InputText id="name" v-model="form.name" />
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <label for="name">Nome*</label>
-                                    <InputText id="name" v-model="form.name" />
+                                    <label for="cpf">CPF*</label>
+                                    <InputMask id="cpf" v-model="form.cpf" mask="999.999.999-99" placeholder="999.999.999-99" @change="form.validate('cpf')"/>
+                                    <div v-if="form.invalid('cpf')" class="text-red-500">
+                                        {{ form.errors.cpf }}
+                                    </div>
                                 </div>
                                 
+                                <div class="flex flex-col gap-2">
+                                    <label for="sex">Sexo*{{ form.sex?.code }}</label>
+                                    <Dropdown v-model="form.sex" :options="sex" optionLabel="name"
+                                       placeholder="Selecione o Sexo" @change="form.validate('sex')"
+                                        class="w-full md:w-14rem" />
+                                    <div v-if="form.invalid('sex')" class="text-red-500">
+                                        {{ form.errors.sex }}
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <label for="address">Endereço*</label>
+                                    <InputText id="address" v-model="form.address" placeholder="Digite o Endereço" @change="form.validate('address')"/>
+                                    <div v-if="form.invalid('address')" class="text-red-500">
+                                        {{ form.errors.address }}
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <label for="classroom_id">Turmas*</label>
+                                    <Dropdown v-model="form.classroom_id" :options="classrooms" optionLabel="name"
+                                        @change="form.validate('classroom_id')" placeholder="Selecione a Escola"
+                                        class="w-full md:w-14rem" />
+                                    <div v-if="form.invalid('classroom_id')" class="text-red-500">
+                                        {{ form.errors.classroom_id }}
+                                    </div>
+                                </div>
                             </div>
-
+                            <button type="submit" class="py-2 px-4 m-5 rounded-lg bg-green-600 text-white">Enviar</button>
                         </form>
                     </div>
                 </div>
