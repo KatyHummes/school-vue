@@ -25,13 +25,50 @@ class SchoolController extends Controller
 
     public function store(SchoolRequest $request)
     {
-        $school = School::create([
-            'name' => $request->input('name'),
-            'education' => $request->input('education')['name'],
-            'address' => $request->input('address'),
-            'course' => $request->input('course')['name'],
-        ]);
+        // dd($request->all
 
-        return response()->json(['message' => 'Escola e Sala de Aula criadas com sucesso.']);
+        try {
+            School::create([
+                'name' => $request->input('name'),
+                'education' => $request->input('education')['name'],
+                'address' => $request->input('address'),
+                'course' => $request->input('course')['name'],
+            ]);
+
+            return redirect()->back()->with('success', 'Escola criada com sucesso.');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao criar Escola.');
+        }
+    }
+
+    public function edit($id)
+    {
+        $school = School::findOrFail($id);
+
+        return Inertia::render('School/Edit', [
+            'school' =>  $school
+        ]);
+    }
+
+    public function update(StudentRequest $id)
+    {
+        $school = School::findOrFail($id);
+
+        try {
+            School::update([
+                'name' => $school->input('name'),
+                'education' => $school->input('education')['name'],
+                'address' => $school->input('address'),
+                'course' => $school->input('course')['name'],
+            ]);
+
+            return redirect()->back()->with('success', 'Escola criada com sucesso.');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao criar Escola.');
+        }
     }
 }

@@ -53,8 +53,27 @@ class ClassroomController extends Controller
         $classroom = Classroom::findOrFail($id);
 
         return Inertia::render('Classroom/Edit', [
-            'classroom' =>  $classroom
+            'classroom' => $classroom
         ]);
     }
 
+    public function update(ClassroomRequest $request, $id)
+    {
+        $classroom = Classroom::findOrFail($id);
+
+        try {
+            $classroom->update([
+                'school_id' => $request->input('school_id')['id'],
+                'name' => $request->input('name'),
+                'rotation' => $request->input('rotation')['name'],
+                'max_students' => $request->input('max_students'),
+            ]);
+
+            return redirect()->back()->with('success', 'Aluno criado com sucesso!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao criar Aluno.');
+        }
+    }
 }

@@ -24,6 +24,8 @@ class SchoolRequest extends FormRequest
         return [
             'name' => ['required', 'max:255'],
             'education' => ['required'],
+            'course' => ['required'],
+            'address' => ['required', 'max:255']
         ];
     }
 

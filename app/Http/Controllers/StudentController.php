@@ -22,17 +22,17 @@ class StudentController extends Controller
 
     public function store(StudentRequest $request)
     {
-        // dd($request->all());
+        // dd($request->all
 
         try {
             Student::create([
-                'classroom_id' => $request->input('classroom_id'),
+                'classroom_id' => $request->input('classroom_id')['id'],
                 'name' => $request->input('name'),
                 'birth' => $request->input('birth'),
                 'sex' => $request->input('sex')['name'],
                 'cpf' => $request->input('cpf'),
                 'address' => $request->input('address'),
-            ]);;
+            ]);
 
             return redirect()->back()->with('success', 'Aluno criado com sucesso!');
         } catch (ValidationException $e) {
@@ -49,5 +49,36 @@ class StudentController extends Controller
         return Inertia::render('Student/Students', [
             'students' =>  $students
         ]);
+    }
+
+    public function edit($id)
+    {
+        $student = Student::findOrFail($id);
+
+        return Inertia::render('Student/Edit', [
+            'student' =>  $student
+        ]);
+    }
+
+    public function update(StudentRequest $id)
+    {
+        $student = Student::findOrFail($id);
+
+        try {
+            Student::update([
+                'classroom_id' => $student->input('classroom_id'),
+                'name' => $student->input('name'),
+                'birth' => $student->input('birth'),
+                'sex' => $student->input('sex')['name'],
+                'cpf' => $student->input('cpf'),
+                'address' => $student->input('address'),
+            ]);
+
+            return redirect()->back()->with('success', 'Aluno criado com sucesso!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao criar Aluno.');
+        }
     }
 }

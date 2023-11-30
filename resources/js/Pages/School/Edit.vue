@@ -1,12 +1,10 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import InputText from 'primevue/inputtext';
-import 'vue-toast-notification/dist/theme-sugar.css';
 import { useForm } from 'laravel-precognition-vue-inertia';
+import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
-import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 
 
@@ -14,16 +12,13 @@ const props = defineProps({
     classroom: Object,
     schools: Array
 });
-// console.log("TESTE", props.classroom.id);
-const form = useForm('put', route('classroom.update', { id: props.classroom.id }),
- {
+
+const form = useForm('post', route('classroom.store'), {
     name: props.classroom.name,
     rotation: props.classroom.rotation.value,
     max_students: props.classroom.max_students,
-    school_id: props.classroom.school_id
+
 });
-
-
 const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => form.reset(),
@@ -45,7 +40,7 @@ onMounted(() => {
     <AppLayout title="edit-school">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Turma
+                Editar Escola
             </h2>
         </template>
 
@@ -54,7 +49,6 @@ onMounted(() => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                     <form @submit.prevent="submit">
                         <div class="grid md:grid-cols-2 gap-4">
-
                             <div class="flex flex-col gap-2">
                                 <label for="name">Nome*</label>
                                 <InputText id="name" v-model="form.name" @change="form.validate('name')" />
@@ -80,15 +74,15 @@ onMounted(() => {
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="school_id">Escola*</label>
-                                <Dropdown v-model="form.school_id" :options="schools" optionLabel="name"
-                                    @change="form.validate('school_id')" placeholder="Selecione a Escola"
-                                    class="w-full md:w-14rem" />
-                                <div v-if="form.invalid('school_id')" class="text-red-500">
-                                    {{ form.errors.school_id }}
+                                    <label for="school_id">Escola*</label>
+                                    <Dropdown v-model="form.school_id" :options="schools" optionLabel="name"
+                                        @change="form.validate('school_id')" placeholder="Selecione a Escola"
+                                        class="w-full md:w-14rem" />
+                                    <div v-if="form.invalid('school_id')" class="text-red-500">
+                                        {{ form.errors.school_id }}
+                                    </div>
                                 </div>
-                            </div>
-
+                                
                         </div>
                         <button type="submit" class="py-2 px-4 m-5 rounded-lg bg-green-600 text-white">Enviar</button>
 

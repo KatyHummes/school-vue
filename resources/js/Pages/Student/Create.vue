@@ -8,7 +8,10 @@ import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
+const toast = useToast();
 
 const props = defineProps({
     classrooms: Array
@@ -21,7 +24,7 @@ const form = useFormPrecognition('post', route('student.store'), {
     cpf: '',
     sex: '',
     address: '',
-    classrom_id: '',
+    classroom_id: '',
 });
 
 const submit = () => form.submit({
@@ -30,6 +33,7 @@ const submit = () => form.submit({
         form.reset();
         toast.success("Aluno(a) criado(a) com Sucesso!", {
             position: 'top-right',
+            duration: 5000
         });
     }
 });

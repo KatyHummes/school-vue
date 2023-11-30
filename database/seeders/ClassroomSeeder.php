@@ -19,7 +19,7 @@ class ClassroomSeeder extends Seeder
                 Classroom::create([
                     'school_id' => $school->id,
                     'name' => $faker->word,
-                    'rotation' => $faker->word,
+                    'rotation' => $faker->randomElement(['Manhã', 'Tarde', 'Noite']),
                     'max_students' => $faker->randomNumber(2),
                 ]);
             }
