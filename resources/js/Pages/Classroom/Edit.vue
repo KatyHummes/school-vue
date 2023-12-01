@@ -44,7 +44,7 @@ onMounted(() => {
 });
 
 onMounted(() => {
-    const selectedSchool = props.schools.find(school => school.id === props.classroom.school_id);
+    const selectedSchool = props.schools.find(sch => sch.id === props.classroom.school_id);
 
     if (selectedSchool) {
         form.school_id = selectedSchool;

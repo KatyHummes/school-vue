@@ -54,11 +54,12 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = Student::findOrFail($id);
-        $classroom = Classroom::get(['id', 'name']);
+
+        $classrooms = Classroom::get(['id', 'name']);
 
         return Inertia::render('Student/Edit', [
             'student' =>  $student,
-            'classroom' => $classroom
+            'classrooms' => $classrooms
         ]);
     }
    

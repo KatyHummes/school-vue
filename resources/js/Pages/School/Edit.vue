@@ -82,7 +82,7 @@ onMounted(() => {
     <AppLayout title="edit-school">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Escola{{ school }}
+                Editar Escola
             </h2>
         </template>
 
