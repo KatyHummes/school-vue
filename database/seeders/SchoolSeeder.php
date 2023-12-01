@@ -17,13 +17,13 @@ class SchoolSeeder extends Seeder
         $faker = Faker::create();
 
         $nivelEducacaoECursos = [
-            'average' => ['Médio', 'Médio Técnico'],
-            'technical' => ['Técnico em Administração', 'Técnico em Enfermagem', 'Técnico em Informática', 'Técnico em Contabilidade'],
-            'higher' => ['Análise e Desenvolvimento de Sistemas', 'Design Gráfico', 'Design de Jogos', 'Design de Interiores'],
+            'Médio' => ['Médio', 'Médio Técnico'],
+            'Técnico' => ['Técnico em Administração', 'Técnico em Enfermagem', 'Técnico em Informática', 'Técnico em Contabilidade'],
+            'Superior' => ['Análise e Desenvolvimento de Sistemas', 'Design Gráfico', 'Design de Jogos', 'Design de Interiores'],
         ];
 
         foreach (range(1, 100) as $index) {
-            $nivelEducacao = $faker->randomElement(['average', 'technical', 'higher']);
+            $nivelEducacao = $faker->randomElement(['Médio', 'Técnico', 'Superior']);
             $course = $faker->randomElement($nivelEducacaoECursos[$nivelEducacao]);
 
             School::create([
@@ -34,5 +34,4 @@ class SchoolSeeder extends Seeder
             ]);
         }
     }
-    
 }

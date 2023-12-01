@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputText from 'primevue/inputtext';
 import Calendar from 'primevue/calendar';
@@ -12,7 +12,8 @@ import Button from 'primevue/button';
 
 
 const props = defineProps({
-    student: Object
+    student: Object,
+    classrooms: Array,
 });
 
 const form = useFormPrecognition('post', route('student.store'), {
@@ -21,7 +22,7 @@ const form = useFormPrecognition('post', route('student.store'), {
     cpf: props.student.cpf,
     sex: props.student.sex,
     address: props.student.address,
-    classrom_id: props.student.classrom_id,
+    classroom_id: props.student.classroom_id,
 });
 
 const submit = () => form.submit({
@@ -40,6 +41,23 @@ const sex = ref([
     { name: 'Outro', code: 'O' },
 ]);
 
+onMounted(() => {
+    const selectedSex = sex.value.find(rot => rot.name === props.student.sex);
+
+    if (selectedSex) {
+        form.sex = selectedSex;
+    }
+});
+
+onMounted(() => {
+    console.log("Initial classroom_id:", props.student.classroom_id);
+
+    const selectedClassroom = props.classrooms.find(classroom => classroom.id === props.student.classroom_id);
+
+    if (selectedClassroom) {
+        form.classroom_id = selectedClassroom;
+    }
+});
 
 </script>
 
@@ -84,7 +102,7 @@ const sex = ref([
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="sex">Sexo*{{ form.sex?.code }}</label>
+                                <label for="sex">Sexo*</label>
                                 <Dropdown v-model="form.sex" :options="sex" optionLabel="name"
                                     placeholder="Selecione o Sexo" @change="form.validate('sex')"
                                     class="w-full md:w-14rem" />
@@ -101,8 +119,8 @@ const sex = ref([
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="classroom_id">Turmas*</label>
-                                <Dropdown v-model="form.classroom_id" :options="classrooms" optionLabel="name"
+                                <label for="classroom_id">Turmas*{{ form.classroom_id?.code }}</label>
+                                <Dropdown v-model="form.classroom_id.id" :options="classrooms" optionLabel="name"
                                     @change="form.validate('classroom_id')" placeholder="Selecione a Escola"
                                     class="w-full md:w-14rem" />
                                 <div v-if="form.invalid('classroom_id')" class="text-red-500">

@@ -51,9 +51,11 @@ class ClassroomController extends Controller
     public function edit($id)
     {
         $classroom = Classroom::findOrFail($id);
+        $schools = School::get(['id', 'name']);
 
         return Inertia::render('Classroom/Edit', [
-            'classroom' => $classroom
+            'classroom' => $classroom,
+            'schools' => $schools
         ]);
     }
 

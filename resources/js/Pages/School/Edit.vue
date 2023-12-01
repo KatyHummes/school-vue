@@ -1,46 +1,88 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
+import 'vue-toast-notification/dist/theme-sugar.css';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
+import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 
-
 const props = defineProps({
-    classroom: Object,
-    schools: Array
+    school: Object
 });
 
-const form = useForm('post', route('classroom.store'), {
-    name: props.classroom.name,
-    rotation: props.classroom.rotation.value,
-    max_students: props.classroom.max_students,
-
+const form = useForm('put', route('school.update', { id: props.school.id }), {
+    name: props.school.name,
+    education: props.school.education,
+    course: props.school.course,
+    address: props.school.address
 });
 const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => form.reset(),
 });
 
-const rotation = ref([
-    { name: 'Manhã', code: 'M' },
-    { name: 'Tarde', code: 'T' },
-    { name: 'Noite', code: 'N' },
+const educations = ref([
+    { name: 'Médio', code: 'M' },
+    { name: 'Técnico', code: 'T' },
+    { name: 'Superior', code: 'S' },
+]);
+
+const average = ref([
+    { name: 'Médio', code: 'MN' },
+    { name: 'Médio Técnico', code: 'MT' },
+]);
+
+const technical = ref([
+    { name: 'Técnico em Administração', code: 'TA' },
+    { name: 'Técnico em Enfermagem', code: 'TE' },
+    { name: 'Técnico em Informática', code: 'TI' },
+    { name: 'Técnico em Contabilidade', code: 'TC' },
+]);
+
+const higher = ref([
+    { name: 'Análise e Desenvolvimento de Sistemas', code: 'ADS' },
+    { name: 'Design Gráfico', code: 'DG' },
+    { name: 'Design de Jogos', code: 'DJ' },
+    { name: 'Design de Interiores', code: 'DI' },
+
 ]);
 
 onMounted(() => {
-    form.school_id = props.classroom.school_id;
+    const selectedEducation = educations.value.find(edu => edu.name === props.school.education);
+    if (selectedEducation) {
+        form.education = selectedEducation;
+    }
 });
 
+onMounted(() => {
+    const selectedEducation = educations.value.find(edu => edu.name === props.school.education);
+    if (selectedEducation) {
+        form.education = selectedEducation;
+
+        switch (selectedEducation.code) {
+            case 'M':
+                form.course = average.value.find(course => course.name === props.school.course);
+                break;
+            case 'T':
+                form.course = technical.value.find(course => course.name === props.school.course);
+                break;
+            case 'S':
+                form.course = higher.value.find(course => course.name === props.school.course);
+                break;
+            default:
+                form.course = null;
+        }
+    }
+});
 </script>
 
 <template>
     <AppLayout title="edit-school">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Editar Escola
+                Editar Escola{{ school }}
             </h2>
         </template>
 
@@ -48,7 +90,7 @@ onMounted(() => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
                     <form @submit.prevent="submit">
-                        <div class="grid md:grid-cols-2 gap-4">
+                        <div class="p-6 grid md:grid-cols-2 gap-4">
                             <div class="flex flex-col gap-2">
                                 <label for="name">Nome*</label>
                                 <InputText id="name" v-model="form.name" @change="form.validate('name')" />
@@ -57,32 +99,38 @@ onMounted(() => {
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="rotation">Turno*</label>
-                                <Dropdown v-model="form.rotation" :options="rotation" optionLabel="name"
-                                    @change="form.validate('rotation')" placeholder="Selecione o Turno"
+                                <label for="name">Escolaridade*{{ form.education?.code }}</label>
+                                <Dropdown v-model="form.education" :options="educations" optionLabel="name"
+                                    @change="form.validate('education')" placeholder="Selecione a Escolaridade"
                                     class="w-full md:w-14rem" />
-                                <div v-if="form.invalid('rotation')" class="text-red-500">
-                                    {{ form.errors.rotation }}
+                                <div v-if="form.invalid('education')" class="text-red-500">
+                                    {{ form.errors.education }}
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="minmax-buttons" class="font-bold block mb-2">Número de Alunos*</label>
-                                <InputNumber id="max_students" v-model="form.max_students" inputId="minmax-buttons"
-                                    mode="decimal" showButtons @change="form.validate('max_students')" :min="0" :max="50" />
-                                <div v-if="form.invalid('max_students')" class="text-red-500">
-                                    {{ form.errors.max_students }}
+                                <label for="address">Endereço*</label>
+                                <InputText id="address" v-model="form.address" @change="form.validate('address')" />
+                                <div v-if="form.invalid('address')" class="text-red-500">
+                                    {{ form.errors.address }}
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                    <label for="school_id">Escola*</label>
-                                    <Dropdown v-model="form.school_id" :options="schools" optionLabel="name"
-                                        @change="form.validate('school_id')" placeholder="Selecione a Escola"
-                                        class="w-full md:w-14rem" />
-                                    <div v-if="form.invalid('school_id')" class="text-red-500">
-                                        {{ form.errors.school_id }}
-                                    </div>
+                                <label for="name">Curso*</label>
+                                <Dropdown v-if="form.education?.code == 'M'" v-model="form.course" :options="average"
+                                    @change="form.validate('course')" optionLabel="name" placeholder="Selecione o curso"
+                                    class="w-full md:w-14rem" />
+                                <Dropdown v-if="form.education?.code == 'T'" v-model="form.course" :options="technical"
+                                    @change="form.validate('course')" optionLabel="name" placeholder="Selecione o curso"
+                                    class="w-full md:w-14rem" />
+                                <Dropdown v-if="form.education?.code == 'S'" v-model="form.course" :options="higher"
+                                    @change="form.validate('course')" optionLabel="name" placeholder="Selecione o curso"
+                                    class="w-full md:w-14rem" />
+                                <p v-if="form.education?.code == null">Selecione uma Escolaridade primeiro!</p>
+                                <div v-if="form.invalid('course')" class="text-red-500">
+                                    {{ form.errors.course }}
                                 </div>
-                                
+                            </div>
+
                         </div>
                         <button type="submit" class="py-2 px-4 m-5 rounded-lg bg-green-600 text-white">Enviar</button>
 
@@ -98,5 +146,4 @@ onMounted(() => {
     .dark\:bg-dots-lighter {
         background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E");
     }
-}
-</style>
+}</style>

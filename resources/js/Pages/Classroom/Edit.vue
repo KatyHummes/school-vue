@@ -1,6 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import InputText from 'primevue/inputtext';
 import 'vue-toast-notification/dist/theme-sugar.css';
@@ -14,13 +13,13 @@ const props = defineProps({
     classroom: Object,
     schools: Array
 });
-// console.log("TESTE", props.classroom.id);
+
 const form = useForm('put', route('classroom.update', { id: props.classroom.id }),
  {
     name: props.classroom.name,
-    rotation: props.classroom.rotation.value,
+    rotation: props.classroom.rotation,
     max_students: props.classroom.max_students,
-    school_id: props.classroom.school_id
+    school_id: props.classroom.school_id,
 });
 
 
@@ -29,16 +28,28 @@ const submit = () => form.submit({
     onSuccess: () => form.reset(),
 });
 
-const rotation = ref([
+const rotations = ref([
     { name: 'Manhã', code: 'M' },
     { name: 'Tarde', code: 'T' },
     { name: 'Noite', code: 'N' },
 ]);
 
 onMounted(() => {
-    form.school_id = props.classroom.school_id;
+    const selectedRotation = rotations.value.find(rot => rot.name === props.classroom.rotation);
+    console.log(props.classroom.rotation)
+    console.log(selectedRotation)
+    if (selectedRotation) {
+        form.rotation = selectedRotation;
+    }
 });
 
+onMounted(() => {
+    const selectedSchool = props.schools.find(school => school.id === props.classroom.school_id);
+
+    if (selectedSchool) {
+        form.school_id = selectedSchool;
+    }
+});
 </script>
 
 <template>
@@ -64,7 +75,7 @@ onMounted(() => {
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="rotation">Turno*</label>
-                                <Dropdown v-model="form.rotation" :options="rotation" optionLabel="name"
+                                <Dropdown v-model="form.rotation" :options="rotations" optionLabel="name"
                                     @change="form.validate('rotation')" placeholder="Selecione o Turno"
                                     class="w-full md:w-14rem" />
                                 <div v-if="form.invalid('rotation')" class="text-red-500">

@@ -54,24 +54,26 @@ class StudentController extends Controller
     public function edit($id)
     {
         $student = Student::findOrFail($id);
+        $classroom = Classroom::get(['id', 'name']);
 
         return Inertia::render('Student/Edit', [
-            'student' =>  $student
+            'student' =>  $student,
+            'classroom' => $classroom
         ]);
     }
-
-    public function update(StudentRequest $id)
+   
+    public function update(StudentRequest $request, $id)
     {
         $student = Student::findOrFail($id);
 
         try {
-            Student::update([
-                'classroom_id' => $student->input('classroom_id'),
-                'name' => $student->input('name'),
-                'birth' => $student->input('birth'),
-                'sex' => $student->input('sex')['name'],
-                'cpf' => $student->input('cpf'),
-                'address' => $student->input('address'),
+            $student->update([
+                'classroom_id' => $request->input('classroom_id'),
+                'name' => $request->input('name'),
+                'birth' => $request->input('birth'),
+                'sex' => $request->input('sex')['name'],
+                'cpf' => $request->input('cpf'),
+                'address' => $request->input('address'),
             ]);
 
             return redirect()->back()->with('success', 'Aluno criado com sucesso!');

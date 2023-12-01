@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { ref, computed, } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -10,7 +10,6 @@ import Tag from 'primevue/tag';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 
-
 const props = defineProps({
     schools: Array
 });
@@ -19,8 +18,8 @@ const schools = computed(() => {
     return props.schools.map(school => ({
         id: school.id,
         name: school.name,
-        course: school.course,
         education: school.education,
+        course: school.course,
         address: school.address,
     }));
 });
@@ -142,6 +141,7 @@ const getSeverity = (education) => {
                                         placeholder="Pesquise o Endereço" />
                                 </template>
                             </Column>
+
                             <Column headerStyle="width:4rem" header="Ações" field="actions"
                                 href="{{ route('school.edit', $) }}">
                                 <template #body="{ data }">

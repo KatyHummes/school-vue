@@ -75,7 +75,7 @@ const higher = ref([
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2">
-                                <label for="name">Escolaridade*{{ form.education?.code }}</label>
+                                <label for="name">Escolaridade*</label>
                                 <Dropdown v-model="form.education" :options="educations" optionLabel="name"
                                     @change="form.validate('education')" placeholder="Selecione a Escolaridade"
                                     class="w-full md:w-14rem" />

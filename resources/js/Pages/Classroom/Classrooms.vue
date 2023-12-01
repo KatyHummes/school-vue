@@ -133,7 +133,7 @@ const getSeverity = (rotation) => {
                                     placeholder="Pesquise o Endereço" />
                             </template>
                         </Column>
-
+                        
                         <Column headerStyle="width:4rem" header="Ações" field="actions"
                             href="{{ route('classroom.edit', $) }}">
                             <template #body="{ data }">
@@ -148,6 +148,7 @@ const getSeverity = (rotation) => {
                                 </button>
                             </template>
                         </Column>
+
                     </DataTable>
                 </div>
             </div>

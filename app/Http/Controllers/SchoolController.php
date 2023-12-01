@@ -51,17 +51,18 @@ class SchoolController extends Controller
             'school' =>  $school
         ]);
     }
+    
 
-    public function update(StudentRequest $id)
+    public function update(StudentRequest $request, $id)
     {
         $school = School::findOrFail($id);
 
         try {
-            School::update([
-                'name' => $school->input('name'),
-                'education' => $school->input('education')['name'],
-                'address' => $school->input('address'),
-                'course' => $school->input('course')['name'],
+            $school->update([
+                'name' => $request->input('name'),
+                'education' => $request->input('education')['name'],
+                'address' => $request->input('address'),
+                'course' => $request->input('course')['name'],
             ]);
 
             return redirect()->back()->with('success', 'Escola criada com sucesso.');
