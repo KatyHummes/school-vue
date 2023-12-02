@@ -84,4 +84,11 @@ class StudentController extends Controller
             return redirect()->back()->with('error', 'Erro ao criar Aluno.');
         }
     }
+
+    public function delete($id)
+    {
+        $student = Student::findOrFail($id);
+
+        $student->delete();
+    }
 }

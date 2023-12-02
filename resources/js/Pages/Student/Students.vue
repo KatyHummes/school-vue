@@ -9,8 +9,8 @@ import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import Tag from 'primevue/tag';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
-
-
+import Dialog from 'primevue/dialog';
+import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
     students: Array
@@ -47,6 +47,51 @@ const clearFilter = () => {
     initFilters();
 };
 
+const confirmDelete = (studentId) => {
+    const isConfirmed = window.confirm("Tem certeza que deseja excluir este aluno?");
+
+    if (isConfirmed) {
+        axios.delete(`/excluir-aluno/${studentId}`)
+            .then(response => {
+                console.log(response.data);
+            })
+            // .catch(error => {
+            //     console.error(error);
+            // });
+    }
+};
+
+const displayConfirmation = ref(false);
+const studentToDelete = ref(null);
+
+const clearConfirmation = () => {
+    displayConfirmation.value = false;
+    studentToDelete.value = null;
+};
+
+const confirmDeleteModal = (studentId) => {
+    displayConfirmation.value = true;
+
+    studentToDelete.value = studentId;
+};
+
+const executeDelete = () => {
+    // Chame a rota de exclusão
+    axios.delete(`/excluir-aluno/${studentToDelete.value}`)
+        .then(response => {
+            // Lide com a resposta do servidor, por exemplo, atualizando a lista de alunos
+            console.log(response.data);
+            // Feche a modal de confirmação
+            clearConfirmation();
+        })
+        .catch(error => {
+            // Lide com erros, por exemplo, exibindo uma mensagem de erro
+            console.error(error);
+            // Feche a modal de confirmação
+            clearConfirmation();
+        });
+};
+
 const getSeverity = (sex) => {
     switch (sex) {
         case 'Masculino':
@@ -63,7 +108,11 @@ const getSeverity = (sex) => {
 
 <template>
     <Head title="Welcome" />
-
+    <Modal :show="displayConfirmation" @close="clearConfirmation">
+    <form @submit.prevent="executeDelete(studentToDelete)">
+    <button>deletar</button>
+    </form>
+    </Modal>
     <AppLayout title="welcome">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -104,7 +153,7 @@ const getSeverity = (sex) => {
                             </template>
                             <template #filter="{ filterModel }">
                                 <InputText v-model="filterModel.value" type="number" class="p-column-filter"
-                                placeholder="99/99/9999" mask="99/99/9999"  />
+                                    placeholder="99/99/9999" mask="99/99/9999" />
                             </template>
                         </Column>
                         <Column header="Sexo" field="sex" :filterMenuStyle="{ width: '14rem' }" style="min-width: 12rem">
@@ -155,7 +204,7 @@ const getSeverity = (sex) => {
                             </template>
                         </Column>
 
-                        <Column headerStyle="width:4rem" header="Ações" field="actions"
+                        <Column headerStyle="width:4rem" header="edição" field="actions"
                             href="{{ route('student.edit', $) }}">
                             <template #body="{ data }">
                                 <button type="submit">
@@ -169,8 +218,20 @@ const getSeverity = (sex) => {
                                 </button>
                             </template>
                         </Column>
-                    </DataTable>
 
+                        <Column headerStyle="width:4rem" header="Delete" field="actions">
+                            <template #body="{ data }">
+                                <button @click="confirmDeleteModal(data.id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                </button>
+                            </template>
+                        </Column>
+
+                    </DataTable>
 
                 </div>
             </div>
