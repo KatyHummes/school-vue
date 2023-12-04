@@ -28,10 +28,9 @@ const form = useFormPrecognition('put', route('student.update', { id: props.stud
 const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => {
-        form.reset();
-        toast.success("Aluno(a) atualizado(a) com Sucesso!", {
-            position: 'top-right',
-        });
+        // toast.success("Aluno(a) atualizado(a) com Sucesso!", {
+        //     position: 'top-right',
+        // });
     }
 });
 

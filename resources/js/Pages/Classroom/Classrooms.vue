@@ -9,6 +9,7 @@ import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import Tag from 'primevue/tag';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
+import Modal from '@/Components/Modal.vue';
 
 
 
@@ -57,10 +58,44 @@ const getSeverity = (rotation) => {
     }
 };
 
+const displayConfirmation = ref(false);
+const classroomToDelete = ref(null);
 
+const clearConfirmation = () => {
+    displayConfirmation.value = false;
+    classroomToDelete.value = null;
+};
+
+const confirmDeleteModal = (classroomId) => {
+    displayConfirmation.value = true;
+
+    classroomToDelete.value = classroomId;
+};
+
+const executeDelete = () => {
+    
+    axios.delete(`/excluir-turma/${classroomToDelete.value}`)
+        .then(response => {
+            console.log(response.data);
+            clearConfirmation();
+        })
+        .catch(error => {
+            console.error(error);
+            clearConfirmation();
+        });
+};
 </script>
 
 <template>
+     <Modal :show="displayConfirmation" @close="clearConfirmation">
+        <form @submit.prevent="executeDelete(classroomToDelete)">
+            <h2 class="flex items-center justify-center p-4 m-4 font-bold text-green-950">tem certeza que deseja excluir esta turma!</h2>
+            <div class="flex justify-around">
+                <button type="submit" class="bg-red-500 text-white rounded-md m-4 px-2 py-1">Excluir </button>
+                <button type="button" class="bg-green-500 text-white rounded-md m-4 px-2 py-1" @click="clearConfirmation">cancelar</button>
+            </div>
+        </form>
+    </Modal>
     <AppLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">

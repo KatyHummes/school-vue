@@ -9,7 +9,6 @@ import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import Tag from 'primevue/tag';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
-import Dialog from 'primevue/dialog';
 import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
@@ -47,20 +46,6 @@ const clearFilter = () => {
     initFilters();
 };
 
-const confirmDelete = (studentId) => {
-    const isConfirmed = window.confirm("Tem certeza que deseja excluir este aluno?");
-
-    if (isConfirmed) {
-        axios.delete(`/excluir-aluno/${studentId}`)
-            .then(response => {
-                console.log(response.data);
-            })
-            // .catch(error => {
-            //     console.error(error);
-            // });
-    }
-};
-
 const displayConfirmation = ref(false);
 const studentToDelete = ref(null);
 
@@ -76,18 +61,14 @@ const confirmDeleteModal = (studentId) => {
 };
 
 const executeDelete = () => {
-    // Chame a rota de exclusão
+    
     axios.delete(`/excluir-aluno/${studentToDelete.value}`)
         .then(response => {
-            // Lide com a resposta do servidor, por exemplo, atualizando a lista de alunos
             console.log(response.data);
-            // Feche a modal de confirmação
             clearConfirmation();
         })
         .catch(error => {
-            // Lide com erros, por exemplo, exibindo uma mensagem de erro
             console.error(error);
-            // Feche a modal de confirmação
             clearConfirmation();
         });
 };
@@ -107,11 +88,14 @@ const getSeverity = (sex) => {
 </script>
 
 <template>
-    <Head title="Welcome" />
     <Modal :show="displayConfirmation" @close="clearConfirmation">
-    <form @submit.prevent="executeDelete(studentToDelete)">
-    <button>deletar</button>
-    </form>
+        <form @submit.prevent="executeDelete(studentToDelete)">
+            <h2 class="flex items-center justify-center p-4 m-4 font-bold text-green-950">tem certeza que deseja excluir este aluno(a)!</h2>
+            <div class="flex justify-around">
+                <button type="submit" class="bg-red-500 text-white rounded-md m-4 px-2 py-1">Excluir </button>
+                <button type="button" class="bg-green-500 text-white rounded-md m-4 px-2 py-1" @click="clearConfirmation">cancelar</button>
+            </div>
+        </form>
     </Modal>
     <AppLayout title="welcome">
         <template #header>

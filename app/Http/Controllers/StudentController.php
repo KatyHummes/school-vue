@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 class StudentController extends Controller
 {
-   
+
     public function create()
     {
         $classrooms = Classroom::get(['id', 'name']);
@@ -45,7 +45,7 @@ class StudentController extends Controller
     public function students()
     {
         $students = Student::with('classroom')->get();
-        
+
         return Inertia::render('Student/Students', [
             'students' =>  $students
         ]);
@@ -62,27 +62,20 @@ class StudentController extends Controller
             'classrooms' => $classrooms
         ]);
     }
-   
+
     public function update(StudentRequest $request, $id)
     {
+        // dd($request->all(), $id);
         $student = Student::findOrFail($id);
 
-        try {
-            $student->update([
-                'classroom_id' => $request->input('classroom_id'),
-                'name' => $request->input('name'),
-                'birth' => $request->input('birth'),
-                'sex' => $request->input('sex')['name'],
-                'cpf' => $request->input('cpf'),
-                'address' => $request->input('address'),
-            ]);
-
-            return redirect()->back()->with('success', 'Aluno criado com sucesso!');
-        } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao criar Aluno.');
-        }
+        $student->update([
+            'name' => $request->input('name'),
+            'birth' => $request->input('birth'),
+            'sex' => $request->input('sex')['name'],
+            'cpf' => $request->input('cpf'),
+            'address' => $request->input('address'),
+            'classroom_id' => $request->input('classroom_id')['id'],
+        ]);
     }
 
     public function delete($id)
