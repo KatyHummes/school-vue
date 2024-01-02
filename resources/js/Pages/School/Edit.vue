@@ -76,6 +76,8 @@ onMounted(() => {
         }
     }
 });
+form.sex = sexes.value.find(sexo => sexo.name === props.people.sex);
+                break;
 </script>
 
 <template>

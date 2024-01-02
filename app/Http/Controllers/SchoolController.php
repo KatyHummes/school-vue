@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SchoolRequest;
 use App\Models\School;
 use App\Models\Classes;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -53,7 +54,7 @@ class SchoolController extends Controller
     }
 
 
-    public function update(StudentRequest $request, $id)
+    public function update(SchoolRequest $request, $id)
     {
         $school = School::findOrFail($id);
 
